@@ -4,5 +4,3 @@ This project is still being developed, but has already some main features like w
 To get 3D model, visit: https://www.thingiverse.com/thing:6733826
 
 If you want to read more about controlling the robot by gestures, face recognition etc: https://github.com/Marcel3245/Tower
-
-To learn more about this project, I recommend visiting: https://marcelborkowski.com/post/robot-dog/
