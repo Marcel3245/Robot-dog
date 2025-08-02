@@ -1,3 +1,8 @@
+# Announcement of Robot-Dog V2
+<p align="center">
+  <img width="1519" height="698" alt="image" src="https://github.com/user-attachments/assets/bee1af0e-be98-4ed1-a94a-49f506f00f31" />
+</p>
+
 # Robot-dog
 This project is still being developed, but has already some main features like walking mode, pitching and starting position(stand-up). What will be included is to be able to control the robot by gestures, and because of that, there are some extra libraries for Raspberry Pi (openCV, picamera2 etc).
 
