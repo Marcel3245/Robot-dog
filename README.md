@@ -142,3 +142,225 @@ By utilizing these two formulas, we can effortlessly compute the desired positio
 
 ---
 
+
+
+
+
+
+# Robot Dog: Assembly and Implementation
+
+## Introduction
+
+As a continuation of my journey with robot dog creation and implementation, the time has come to print the parts and put them all together. It was over 40 hours of continuous printing. Like always, when something has to meet the real world and it’s not only on paper, there are a few things I could make better or change, and I will mention them in this article.
+
+I can’t promise it’s not the last post about this project, and not all my goals will be completed, but we will see what the future will bring.
+
+> I also want to mention that I won’t go so much into detail in parts that I already covered in the other articles, like inverse kinematics, leg design or leg simulation. No more introduction, and enjoy your reading!
+
+## External Parts (Bill of Materials)
+
+### What you need:
+*   12x Servos
+*   1x Buck converter
+*   1x Raspberry Pi 4B
+*   1x High-amperage switch
+*   1x PCA9685 (to control 12 servos)
+*   1x Battery 7.4v, 30c (to not destroy the battery during high ampere draw)
+*   Screws:
+    *   12x M3x12mm
+    *   4x M3x10mm
+    *   8x M3x20mm
+    *   4x M3x14mm
+    *   8x M3x18mm
+*   32x M3 nuts
+*   20x M3 Washers
+
+### Additional:
+*   1x Fuse 20A (to protect buck converter)
+*   1x Fuse holder
+*   1x Multimeter (I know it can hold up to 10A, but it is only to calibrate the buck converter).
+
+## Design and Printing
+
+If you want to print your robot dog, go and see [my Thingiverse profile](https://www.thingiverse.com/your_profile_link). Let’s start from the place where everything began, which is a 3D model. My main idea was to create a robot which would be:
+1.  The size of a small dog.
+2.  Effortless in changing broken parts.
+3.  Easy to assemble with as few screws as possible.
+
+In the end, I think I accomplished these three points. Overall to put it together you need only 36 screws (without including the screws you get in the kit of servos), where the leg has three dimensions of movement with a reliable rigid body. The robot consists of 21 parts, where one leg is 8 parts and the body is built out of 3 parts (with a possible extension, a cover on the top). For each leg, there are 3 servos. To read about leg design, I highly recommend reading my last post. For my body, I decided to design only 3 parts to make it easy to assemble; it consists of `Back Bumper`, `Front Bumper` and `Body`. To screw these three parts together you need only 8 M3x20mm screws.
+
+During printing, you have to mirror four parts for the left and right sides in your slicing program (`Shoulder-Front`, `Shoulder-Back`, `Thigh-lower` and `Thigh-upper`). Or download ready-to-use files from my Thingiverse profile, given above. For me, it is Cura, which I highly recommend.
+
+### Printing data (quality 0.2 mm, adhesion and support on, 0.4 nozzle):
+*   **100% infill:**
+    *   `Transition-top1`
+    *   `Transition-top2`
+    *   `Transition-bottomV2`
+*   **20% infill:**
+    *   `Thigh-upper Right`
+    *   `Thigh-lower`
+    *   `Calf Right`
+    *   `Foot`
+    *   `Shoulder`
+    *   `Body`
+    *   `Front and Back bumper`
+
+<p align="center">
+  <img width="491" height="537" alt="image" src="https://github.com/user-attachments/assets/bc0860e1-bad2-4130-b316-4a78a1481522" />
+</p>
+
+## Assembling
+<p align="center">
+  <img width="432" height="546" alt="image" src="https://github.com/user-attachments/assets/40eeca52-4bdc-401a-b9f7-9e09f7fa5388" />
+</p>
+
+Before mounting parts to the servos, you have to calibrate all the servos to their starting position, which means:
+*   Servo top (`S1`) - 0 degrees
+*   Servo bottom (`S2`) - 0 degrees
+*   Shoulder servo (`S3`) - 90 degrees
+
+Using the `servo_calibration.py` script from the repository, you can easily do this. Also, I recommend marking on the servos where their 0 and 180-degree points are and how they rotate. After that, you can start to assemble them.
+
+<p align="center">
+  <img width="726" height="300" alt="image" src="https://github.com/user-attachments/assets/b14a31d5-e012-4e7e-87ae-027b3e8b1dd3" />
+</p>
+
+1.  First, you have to assemble four legs, two rights and two lefts like in the picture above. I would recommend starting from the bottom: screw the foot to the calf, then the calf to the lower and upper Thigh.
+    > **IMPORTANT:** Here, you have to be careful, the bigger holes for nuts should be directed inward! So in the right leg, the bigger holes in the upper part have to be to the left, when the leg is directed to the front (so you see its back, like in the picture above).
+2.  Then you can screw the `Transition-top2`.
+   
+<p align="center">
+  <img width="180" height="337" alt="image" src="https://github.com/user-attachments/assets/0e1c843d-59fa-4252-ac27-33ed0a0aef03" />
+</p>
+  
+3.  When four of your legs are done, you can start mounting servos to the shoulder, but you have to remember to put the servo wing in the shoulder part before (you can also glue it to the surface). Servos should be mounted to the part in the given position. The chamfer in the top-right corner indicates the direction in which the shoulder should be facing (to the front).
+
+<p align="center">
+  <img width="1036" height="372" alt="image" src="https://github.com/user-attachments/assets/7b8bef74-ff14-4b10-99d4-272f0033a5b0" />
+</p>
+
+The entire right side should look like this, and the left side should be the mirror image of the right:
+
+<p align="center">
+  <img width="765" height="462" alt="image" src="https://github.com/user-attachments/assets/32ba3b51-40ed-45d7-b1ff-7bc05cb9fc9d" />
+</p>
+
+4.  When all four legs are done, you can move to mounting servos which will control the yaw of the leg. For all four servos, the rotating part should be on the bottom.
+
+<p align="center">
+  <img width="863" height="471" alt="image" src="https://github.com/user-attachments/assets/e7a443a5-f1d3-48be-be1b-1834a633c9a7" />
+</p>
+
+5.  When all sides are completed, you can attach the servo wings to the shoulder servos in the body and screw the front/back bumper to the body. After all these steps, you are now ready to move further, which is hardware design.
+
+## Hardware
+
+Because of my lack of knowledge of electronics, I tried to keep it simple, which in the end became my biggest mistake.
+
+Below is a hardware diagram of my design. But in this section, I also want to mention how I could make it better, so you don’t have to repeat my mistakes.
+
+<p align="center">
+  <img width="998" height="509" alt="image" src="https://github.com/user-attachments/assets/4681432d-f64d-4708-8843-9d14818e64f5" />
+</p>
+  
+For many, it is obvious why we should use an external power supply for our servos and a different power source for the Raspberry Pi, but for those who it’s not, I would go into more details. Supplying the PCA9685 module from the Raspberry Pi `5v` pin is not a good idea. The voltage level may be okay (servos operate between 4.8v - 7v), but the problem is the current. My power adapter (AC-DC) gives an output of 5.1V, and the `5V` PIN is almost directly connected to it. My adapter also provides around 3.0A, which seems like a lot.
+
+**BUT**, we have to also include the current draw of the Raspberry Pi, which is around **700mA**. In the end, we end up with only `3000mA - 700mA = 2300mA`.
+
+However, another **BUT** appears when we calculate how much current the servos can need. We can read from the datasheet that one servo in the moving phase can draw up to **1300mA**. Multiplying it by 12 servos (assuming all are moving at once) gives us **15,600mA (15.6A)**. Now, this `2300mA` becomes nothing. Even if in the walking function only 8 servos are moving, it still gives you **10,400mA (10.4A)**. That’s a lot.
+
+Also, we can assume the worst-case scenario when all servos are stalled. The datasheet tells us that a stalled servo can draw **2500mA**, the so-called stall current. That would give **30 amps**. Because of that, we need a good battery that can handle this amount of current draw (minimal `30c`) and a good buck converter that drops the voltage from 7.4v to 6v.
+
+> **My Biggest Mistake:** My main and biggest mistake was not splitting the 12 servos into 4 modules, one for each leg. Of course, I would have to then change my PCA9685 (16-channel) into 4 smaller controllers, but I wouldn’t have to worry about destroying the buck converter, servo controller, or even Raspberry Pi. While splitting the servo controller, the highest possible current per controller would be only 7.5 amps, and the average would be around 2.5 amps, not 10!
+
+> **My Second Problem:** My second problem was buying cheap and bad-quality servos. It happens many times that they stall during movement, causing a high stall current that would burn the servo without my reaction. Also, they have a tendency to skip steps. So maybe that’s a good lesson that cheap projects are not always the best…
+
+A piece of advice from me is to redesign the hardware for this project. When you test some code, switch the power supply for servos back to the `5V` PIN on the Raspberry Pi and put the robot on a pedestal, so that the load on the servo will be minimal. The `2300mA` should be enough to test it without breaking any parts.
+
+## Code
+
+I’m not going to upload the entire code here, but explain the basics and hidden math. If you want to download it, you can go to my [GitHub repository](https://github.com/your-repo-link) and find it there. Also, I’m not going to talk about leg inverse kinematics, which I already described [here](link-to-previous-article).
+
+My idea was to store the position in a Python dictionary to execute the position of the robot relatively at once. We always start from calculations of every servo angle position based on our desired position, then store them in the dictionary. When all calculations are done, the `write_servo` function reads data from our dictionary and writes to the given servo.
+
+> ### Dictionary Abbreviation Explanation:
+> *   `FR` - Front leg, Right side
+> *   `FL` - Front leg, Left side
+> *   `BR` - Back leg, Right side
+> *   `BL` - Back leg, Left side
+> *   `S1` - Servo on the top
+> *   `S2` - Servo on the bottom
+> *   `S3` - Servo attached to the shoulder
+
+### Servo Offsets
+We also have to remember about the offsets of our servos. 0 degrees for one servo is not the same position in the real world as another. For example, for `FRS1` and `FLS1`, to create a mirror image, we must apply an offset. To do this, we use simple trigonometry.
+
+<p align="center">
+  <img width="198" height="329" alt="image" src="https://github.com/user-attachments/assets/cb541817-052f-479e-8c2d-f1852032abd4" />
+</p>
+
+If we want to move our 0-degree point to be on the bottom of a semicircle (180 degrees), we have to add `π` (180 degrees). But to also keep the movement area on the correct side, we subtract our desired point from `π`. Our equation will look like `π - desired_point`. When we convert it back to degrees, we create our offset, and the system will know how to make a mirror image.
+
+<p align="center">
+  <img width="671" height="376" alt="image" src="https://github.com/user-attachments/assets/173f8fc5-5073-48fb-84cf-1e2209a6e550" />
+</p>
+
+For example, let's assume we want a position of 30 degrees for both left and right servos.
+*   **Right Servo:** The 0-degree point is already at the bottom, so we just add 30 degrees.
+*   **Left Servo:** We use our formula `π - desired_point`. We give `desired_point=30°`, which gives us `180° - 30° = 150°`. Great, we got a mirror image.
+
+<p align="center">
+  <img width="778" height="479" alt="image" src="https://github.com/user-attachments/assets/abbf6428-8f4b-453e-a92e-a40aadf4753a" />
+</p>
+
+At the end, we just have to find the offset for each servo. This is also a good place to add an adjustment for each servo (in degrees) if the assembly didn't go perfectly.
+
+### Movement Functions
+The `starting_position` function is just the starting phase to have some reference. It uses `starting_foot_cords_front` and `starting_foot_cords_back`. The values are `[yaw, forward/backward, height]` in cm. For example, `[0, 0, 15]` means the robot will have a height of 15 cm, and the foot will be inline with the rotating part of the bottom servo (`S2`).
+
+The next function is `pitch`, which controls how much the robot should be skewed to the front. Knowing the robot's length (`c`) and the desired angle (`α`), we can calculate the change in x (`d`) and z (`zB`, `zF`) for the feet.
+*   `d = (c/2) * (1 - cos(α))`
+*   Back legs height: `zB = h - sin(α) * (robot_length / 2)`
+*   Front legs height: `zF = h + sin(α) * (robot_length / 2)`
+
+<p align="center">
+  <img width="751" height="497" alt="image" src="https://github.com/user-attachments/assets/658e8e08-d7e3-42e0-a77c-7bc6e9cdf86f" />
+</p>
+
+### Walking Gait (Bézier Curve)
+The last function is `walking_mode`. This function is the most complicated and uses a **Bézier curve** to make the path of the foot smoother. I won’t explain it in detail, but if you want to read more, I recommend the article: ["Leg Trajectory Planning for Quadruped Robots with High-Speed Trot Gait"](https://www.mdpi.com/2076-3417/9/9/1890).
+
+The Bézier formula helps us to create a smooth path out of a few points.
+`B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃`
+
+<p align="center">
+  <img width="782" height="486" alt="image" src="https://github.com/user-attachments/assets/86f0a982-903b-4ac7-8541-8eb592f978e4" />
+</p>
+
+Using this formula and creating our path points, we can get a very nice trajectory of the foot based on only 12 points.
+
+<p align="center">
+  <img width="823" height="535" alt="image" src="https://github.com/user-attachments/assets/f8ed1923-e0c0-492c-990e-9823d48ee796" />
+</p>
+
+The movement of the foot can be split into two parts: the **stance phase** and the **swing phase**. I decided that the stance phase will be linear, while the swing phase will have acceleration and deceleration.
+
+To synchronize the four legs, I found that each leg is delayed by ¾ of a cycle relative to the previous one. We can split our movement into 4 phases. At any time, each leg will be in a different phase.
+*   **Phase 1:** ENDING point → MID point
+*   **Phase 2:** MID point → STARTING point
+*   **Phase 3:** STARTING point → MOVE point (75% of swing)
+*   **Phase 4:** MOVE point → ENDING point
+
+The `shift_list_right` function controls which phase each leg is in.
+*   **Cycle 1:** `['FR', 'BR', 'FL', 'BL'] = [phase1, phase2, phase3, phase4]`
+*   **Cycle 2:** `['BL', 'FR', 'BR', 'FL'] = [phase1, phase2, phase3, phase4]`
+
+The `cords_respect_CoM` (Center of Mass) function is for future development with a different coordinate system.
+
+## Conclusion
+
+<p align="center">
+  <img width="871" height="642" alt="image" src="https://github.com/user-attachments/assets/c261261e-7745-4c63-ac2b-7faa1043ba17" />
+</p>
+
+To summarize this project, there are some mistakes/faults that could be improved. However, it was a great project where I learned a lot. There is a chance that in the future I will fix my blunders. You can find the code and 3D models in the given links. I highly recommend developing my project and asking questions, as it is an open-source project.
